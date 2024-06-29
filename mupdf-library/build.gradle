@@ -6,6 +6,9 @@ plugins {
 //如果使用 maven-publish插件。执行对应模块 publish任务
 //如果使用 maven 插件。执行对应模块 uploadArchives任务
 
+def aar_name = "mupdflibrary.aar"
+
+// Terminal 中输入 ./gradlew publish 回车后即可上传到本地库
 publishing {
     publications {
         maven(MavenPublication) {
@@ -66,7 +69,8 @@ publishing {
             }
 //            artifact androidSourcesJar//将源码打包进aar，如果不需要可以去掉
 //            artifact androidJavadocsJar//将注释打包进aar，如果不需要可以去掉
-            artifact("$buildDir/outputs/aar/mupdflibrary.aar")
+            artifact("$buildDir/outputs/aar/$aar_name")
+            //artifact("$buildDir/outputs/aar/${project.getName()}-release.aar")
         }
     }
     repositories {
@@ -109,7 +113,7 @@ android {
     //自定义 build/outputs/aar 目录下的aar文件名称
     libraryVariants.all { variant ->
         variant.outputs.all {
-            outputFileName = "mupdflibrary.aar"
+            outputFileName = aar_name
         }
     }
 
