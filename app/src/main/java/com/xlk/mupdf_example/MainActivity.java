@@ -19,7 +19,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        copyAssets(this, "abcde.pdf");
+        File file = new File(getExternalCacheDir().getAbsolutePath() + File.separator + "abcde.pdf");
+        if(!file.exists()) {
+            copyAssets(this, "abcde.pdf");
+        }
     }
 
     private void copyAssets(Context context, String fileName) {
