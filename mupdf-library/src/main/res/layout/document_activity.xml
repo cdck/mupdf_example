@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="true">
+
+    <ViewAnimator
+        android:id="@+id/switcher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true">
+
+        <LinearLayout
+            android:id="@+id/mainBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/toolbar"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/closeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button"
+                android:src="@drawable/ic_chevron_left_white_24dp" />
+
+            <TextView
+                android:id="@+id/docNameText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:paddingLeft="16dp"
+                android:paddingRight="8dp"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+
+            <ImageButton
+                android:id="@+id/saveButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button"
+                android:src="@drawable/ic_mupdf_save_white" />
+
+            <ImageButton
+                android:id="@+id/screenshotButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button"
+                android:src="@drawable/ic_mupdf_screenshot_white"
+                android:visibility="gone"
+                tools:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/annotationButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button"
+                android:src="@drawable/ic_mupdf_brush_white" />
+
+            <ImageButton
+                android:id="@+id/linkButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button"
+                android:src="@drawable/ic_link_white_24dp" />
+
+            <ImageButton
+                android:id="@+id/searchButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button"
+                android:src="@drawable/ic_search_white_24dp" />
+
+            <ImageButton
+                android:id="@+id/layoutButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button"
+                android:src="@drawable/ic_format_size_white_24dp"
+                android:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/outlineButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button"
+                android:src="@drawable/ic_toc_white_24dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/searchBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/toolbar"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/searchClose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button"
+                android:src="@drawable/ic_mupdf_close_white" />
+
+            <EditText
+                android:id="@+id/searchText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:hint="@string/search"
+                android:imeOptions="actionSearch"
+                android:inputType="text"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:textColorHighlight="#a0a0a0"
+                android:textColorHint="#a0a0a0"
+                android:textSize="16sp" />
+
+            <ImageButton
+                android:id="@+id/searchBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button"
+                android:src="@drawable/ic_chevron_left_white_24dp" />
+
+            <ImageButton
+                android:id="@+id/searchForward"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button"
+                android:src="@drawable/ic_chevron_right_white_24dp" />
+
+        </LinearLayout>
+
+    </ViewAnimator>
+
+    <RelativeLayout
+        android:id="@+id/lowerButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true">
+
+        <SeekBar
+            android:id="@+id/pageSlider"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="0dp"
+            android:background="@color/toolbar"
+            android:paddingLeft="16dp"
+            android:paddingTop="12dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="8dp"
+            android:progressDrawable="@drawable/seek_line"
+            android:thumb="@drawable/seek_thumb"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/pageNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/pageSlider"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/page_indicator"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/inkOperationLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:background="@drawable/layout_bg"
+        android:orientation="vertical"
+        android:visibility="invisible"
+        tools:visibility="visible">
+
+
+        <ImageButton
+            android:id="@+id/doneButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button"
+            android:src="@drawable/ic_mupdf_done_white" />
+
+        <ImageButton
+            android:id="@+id/revokeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button"
+            android:src="@drawable/ic_mupdf_revoke_white" />
+
+        <ImageButton
+            android:id="@+id/deleteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button"
+            android:src="@drawable/ic_mupdf_delete_white" />
+
+        <ImageButton
+            android:id="@+id/penButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button"
+            android:src="@drawable/ic_mupdf_pen_white" />
+
+        <ImageButton
+            android:id="@+id/inkSizeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button"
+            android:src="@drawable/ic_mupdf_line_weight_white" />
+
+        <ImageButton
+            android:id="@+id/lineButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button"
+            android:src="@drawable/ic_mupdf_line_white" />
+
+        <ImageButton
+            android:id="@+id/squareButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button"
+            android:src="@drawable/ic_mupdf_square_white"
+            android:visibility="gone"
+            tools:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/exitButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button"
+            android:src="@drawable/ic_mupdf_close_white" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/inkSizeLayout"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/inkOperationLayout"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        tools:visibility="gone">
+
+        <SeekBar
+            android:id="@+id/inkSizeSeekBar"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="0dp"
+            android:layout_weight="1"
+            android:background="@color/toolbar"
+            android:paddingStart="16dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="8dp"
+            android:progressDrawable="@drawable/seek_line"
+            android:thumb="@drawable/seek_thumb" />
+
+        <TextView
+            android:id="@+id/inkSizeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/layout_bg"
+            android:gravity="center"
+            android:paddingStart="0dp"
+            android:paddingEnd="10dp"
+            android:textColor="@color/white"
+            tools:text="50" />
+    </LinearLayout>
+</RelativeLayout>

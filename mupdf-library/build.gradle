@@ -1,0 +1,143 @@
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
+}
+
+//如果使用 maven-publish插件。执行对应模块 publish任务
+//如果使用 maven 插件。执行对应模块 uploadArchives任务
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+//            from components.release // 或 components.debug 依据你发布的构建变体
+            groupId 'com.xlk.library'
+            artifactId 'mupdf'
+            version '1.0'
+
+            pom {
+                packaging = "aar"
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+            }
+            //带上依赖 ，否则会报错
+            pom.withXml {
+                def dependenciesNode = asNode().appendNode('dependencies')
+
+                def scopes = [configurations.implementation]
+                if (configurations.hasProperty("api")) {
+                    scopes.add(configurations.api)
+                }
+                if (configurations.hasProperty("implementation")) {
+                    scopes.add(configurations.implementation)
+                }
+                if (configurations.hasProperty("debugImplementation")) {
+                    scopes.add(configurations.debugImplementation)
+                }
+                if (configurations.hasProperty("releaseImplementation")) {
+                    scopes.add(configurations.releaseImplementation)
+                }
+                scopes.each { scope ->
+                    scope.allDependencies.each {
+                        if (it instanceof ModuleDependency) {
+                            boolean isTransitive = ((ModuleDependency) it).transitive
+                            if (!isTransitive) {
+                                println "<<<< not transitive dependency: [${it.group}, ${it.name}, ${it.version}]"
+                                return
+                            }
+                        }
+
+                        if (it.group == "${project.rootProject.name}.libs" || it.version == 'unspecified') {
+                            return
+                        }
+
+                        if (it.group && it.name && it.version) {
+                            def dependencyNode = dependenciesNode.appendNode('dependency')
+                            dependencyNode.appendNode('groupId', it.group)
+                            dependencyNode.appendNode('artifactId', it.name)
+                            dependencyNode.appendNode('version', it.version)
+                            dependencyNode.appendNode('scope', scope.name)
+                        }
+                    }
+                }
+            }
+//            artifact androidSourcesJar//将源码打包进aar，如果不需要可以去掉
+//            artifact androidJavadocsJar//将注释打包进aar，如果不需要可以去掉
+            artifact("$buildDir/outputs/aar/mupdflibrary.aar")
+        }
+    }
+    repositories {
+        maven {
+            url "http://127.0.0.1:8081/repository/localRepository/"
+            credentials {
+                username 'admin'
+                password 'cdck5689'
+            }
+        }
+    }
+}
+
+android {
+    namespace 'com.xlk.mupdf.library'
+    compileSdk 31
+
+    defaultConfig {
+        minSdk 21
+        targetSdk 31
+
+        consumerProguardFiles "consumer-rules.pro"
+        ndk {
+            // 设置支持的SO库
+            abiFilters "armeabi-v7a"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    //自定义 build/outputs/aar 目录下的aar文件名称
+    libraryVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "mupdflibrary.aar"
+        }
+    }
+
+    //jar包不包括资源文件，需要打包成aar
+    /*
+    //生成jar包： Terminal中输入 ./gradlew makeJar 回车  之后出现 BUILD SUCCESSFUL 则可以在build/libs/目录下找到 mupdflibrary.jar
+    task makeJar(type: Copy) {
+        //删除存在的
+        delete("build/libs/mupdflibrary.jar")
+        //设置拷贝的文件
+        from('build/intermediates/aar_main_jar/release/')
+        //打进jar包后的文件目录
+        into('build/libs/')
+        //将classes.jar放入build/libs/目录下
+        //include ,exclude参数来设置过滤
+        include('classes.jar')
+        //重命名
+        rename('classes.jar', 'mupdflibrary.jar')
+    }
+    makeJar.dependsOn(build)
+    */
+}
+
+
+dependencies {
+
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.material:material:1.4.+'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
+    implementation 'org.greenrobot:eventbus:3.3.1'
+}

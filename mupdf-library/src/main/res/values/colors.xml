@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<color name="page_indicator">#C0202020</color>
+	<color name="toolbar">#C0202020</color>
+    <color name="white">#FFFFFF</color>
+	<color name="black">#000000</color>
+	<color name="red">#FF0000</color>
+
+	<color name="mupdf_icon_color_white">#FFFFFF</color>
+	<color name="mupdf_icon_color_blue">#2196F3</color>
+
+</resources>

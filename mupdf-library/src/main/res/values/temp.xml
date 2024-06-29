@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    type text         文本类型
+    type link         类型链接
+    type free text         输入自由文本
+    type line         线条类型
+    type square         方形
+    type circle         圆形
+    type polygon         多边形类型
+    type poly line         多边形类型
+    type highlight         类型高亮
+    type underline         下划线类型
+    type squiggly         斜线型
+    type strike out         剔除型
+    type redact         删改
+    type stamp         盖章
+    type caret         粗体字
+    type ink         墨水型
+    type popup         弹出式
+    type file attachment         类型文件附件
+    type sound         类型的声音
+    type movie            电影
+    type rich media            富媒体
+    type widget            小部件
+    type screen            屏幕
+    type printer mark          Type pr     mark
+    type trap net            陷阱网
+    type watermark         类型水印
+    type 3d         3d类型
+    type projection         型投影
+    type unknown         未知类型
+    line ending none         线条结尾无
+    line ending square         线条结尾为方形
+    line ending circle         线条结尾为圆形
+    line ending diamond         线条结尾为菱形
+    line ending open arrow         线条结尾开放箭头
+    line ending closed arrow         线条结尾封闭的箭头
+    line ending butt         线条结尾处的对接
+    line ending r open arrow         线条结尾的R型开放箭头
+    line ending r closed arrow         线条结尾R闭合箭头
+    line ending slash         线条结尾的斜线
+    border style solid         边界样式实线
+    border style dashed         虚线风格
+    border style beveled         边框风格斜线
+    border style inset         边框风格嵌入
+    border style underline         边框风格下划线
+    border effect none         边框效果无
+    border effect cloudy         边框效果多云
+    IS INVISIBLE     不可见的
+    IS HIDDEN     是隐藏的
+    IS PRINT     打印
+    IS NO_ZOOM     无缩放
+    IS NO_ROTATE     没有旋转
+    IS NO_VIEW     无视图
+    IS READ_ONLY     只读
+    IS LOCKED     是锁定的
+    IS TOGGLE_NO_VIEW     是切换无视图
+    IS LOCKED_CONTENTS     是锁定的内容
+</resources>

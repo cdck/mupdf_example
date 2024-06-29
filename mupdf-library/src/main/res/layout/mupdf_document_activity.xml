@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:keepScreenOn="true"
+    tools:ignore="MissingDefaultResource">
+
+    <ViewAnimator
+        android:id="@+id/switcher"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true">
+
+        <LinearLayout
+            android:id="@+id/mainBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/toolbar"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/closeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button"
+                android:src="@drawable/ic_chevron_left_white_24dp"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <TextView
+                android:id="@+id/docNameText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:paddingLeft="16dp"
+                android:paddingRight="8dp"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                tools:text="文件名称文件名称文件名称文件名称文件名称文件名称文件名称文件名称.pdf" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/switch_upload"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:text="批注后上传"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <ImageButton
+                android:id="@+id/refreshButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button"
+                android:src="@drawable/ic_mupdf_refresh" />
+
+            <ImageButton
+                android:id="@+id/screenshotButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button"
+                android:src="@drawable/ic_mupdf_screenshot_white" />
+
+            <ImageButton
+                android:id="@+id/signatureButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button"
+                android:src="@drawable/ic_mupdf_signature_white" />
+
+            <ImageButton
+                android:id="@+id/annotationButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button"
+                android:src="@drawable/ic_mupdf_brush_white" />
+
+            <ImageButton
+                android:id="@+id/outlineButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button"
+                android:src="@drawable/ic_toc_white_24dp" />
+
+            <TextView
+                android:id="@+id/iv_exit"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:drawableLeft="@drawable/ic_mupdf_home"
+                android:gravity="center"
+                android:paddingEnd="5dp"
+                android:text="退出文档"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+            <!--            <ImageView-->
+            <!--                android:id="@+id/iv_exit"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_gravity="center"-->
+            <!--                android:src="@drawable/icon_white_exit_document" />-->
+        </LinearLayout>
+
+    </ViewAnimator>
+
+    <LinearLayout
+        android:id="@+id/inkOperationLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/layout_bg"
+        android:orientation="vertical"
+        android:visibility="invisible"
+        tools:visibility="visible">
+
+        <ImageButton
+            android:id="@+id/doneButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button"
+            android:src="@drawable/ic_mupdf_done_white" />
+
+        <ImageButton
+            android:id="@+id/revokeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button"
+            android:src="@drawable/ic_mupdf_revoke_white" />
+
+        <ImageButton
+            android:id="@+id/deleteButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button"
+            android:src="@drawable/ic_mupdf_delete_white" />
+
+        <ImageButton
+            android:id="@+id/penButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button"
+            android:src="@drawable/ic_mupdf_pen_white" />
+
+        <ImageButton
+            android:id="@+id/inkSizeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button"
+            android:src="@drawable/ic_mupdf_line_weight_white" />
+
+        <ImageButton
+            android:id="@+id/lineButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button"
+            android:src="@drawable/ic_mupdf_line_white" />
+
+        <ImageButton
+            android:id="@+id/squareButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button"
+            android:src="@drawable/ic_mupdf_square_white"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <ImageButton
+            android:id="@+id/exitButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button"
+            android:src="@drawable/ic_mupdf_close_white" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/inkSizeLayout"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/inkOperationLayout"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <SeekBar
+            android:id="@+id/inkSizeSeekBar"
+            android:layout_width="0dp"
+            android:layout_height="36dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="0dp"
+            android:layout_weight="1"
+            android:background="@color/toolbar"
+            android:paddingStart="16dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="8dp"
+            android:progressDrawable="@drawable/seek_line"
+            android:thumb="@drawable/seek_thumb" />
+
+        <TextView
+            android:id="@+id/inkSizeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/layout_bg"
+            android:gravity="center"
+            android:paddingStart="0dp"
+            android:paddingEnd="10dp"
+            android:textColor="@color/white"
+            tools:text="50" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_page_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:paddingBottom="16dp">
+
+        <TextView
+            android:id="@+id/prePage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/page_indicator"
+            android:text="上一页"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/pageNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:background="@drawable/page_indicator"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            tools:text="1 / 94" />
+
+        <TextView
+            android:id="@+id/nextPage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/page_indicator"
+            android:text="下一页"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_mark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:clickable="false"
+        android:enabled="false"
+        android:focusable="false"
+        android:letterSpacing="1"
+        android:rotation="30"
+        android:textColor="#66F4511E"
+        android:textSize="30sp"
+        tools:text="撒旦风口浪尖上的克" />
+
+    <LinearLayout
+        android:id="@+id/ll_signature_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/tv_submit_signature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/shape_mupdf_bg"
+            android:drawableLeft="@drawable/ic_mupdf_ensure"
+            android:drawablePadding="5dp"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="提交签名"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/tv_cancel_signature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/shape_mupdf_bg"
+            android:drawableLeft="@drawable/ic_mupdf_close"
+            android:drawablePadding="5dp"
+            android:gravity="center"
+            android:padding="5dp"
+            android:text="取消签名"
+            android:textColor="@color/white"
+            android:textSize="18sp" />
+    </LinearLayout>
+</RelativeLayout>
