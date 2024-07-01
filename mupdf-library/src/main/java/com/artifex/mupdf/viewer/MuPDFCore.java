@@ -109,31 +109,40 @@ public class MuPDFCore {
 
     private synchronized void gotoPage(int pageNum) {
         /* TODO: page cache */
-        if (pageNum > pageCount - 1)
-            pageNum = pageCount - 1;
-        else if (pageNum < 0)
-            pageNum = 0;
-        if (pageNum != currentPage) {
-            if (page != null)
-                page.destroy();
-            page = null;
-            if (displayList != null)
-                displayList.destroy();
-            displayList = null;
-            page = null;
-            pageWidth = 0;
-            pageHeight = 0;
-            currentPage = -1;
+        try {
+            if (pageNum > pageCount - 1)
+                pageNum = pageCount - 1;
+            else if (pageNum < 0)
+                pageNum = 0;
+            if (pageNum != currentPage) {
+                if (page != null) {
+                    try {
+                        page.destroy();
+                    } catch (Exception e) {
+                        LogUtils.e(e);
+                    }
+                }
+                page = null;
+                if (displayList != null)
+                    displayList.destroy();
+                displayList = null;
+                page = null;
+                pageWidth = 0;
+                pageHeight = 0;
+                currentPage = -1;
 
-            if (doc != null) {
-                page = doc.loadPage(pageNum);
-                Rect b = page.getBounds();
-                pageWidth = b.x1 - b.x0;
-                pageHeight = b.y1 - b.y0;
-                LogUtils.i(TAG, "gotoPage: pageNum:" + pageNum + ",pageWidth:" + pageWidth + ",pageHeight:" + pageHeight);
+                if (doc != null) {
+                    page = doc.loadPage(pageNum);
+                    Rect b = page.getBounds();
+                    pageWidth = b.x1 - b.x0;
+                    pageHeight = b.y1 - b.y0;
+                    LogUtils.i(TAG, "gotoPage: pageNum:" + pageNum + ",pageWidth:" + pageWidth + ",pageHeight:" + pageHeight);
+                }
+
+                currentPage = pageNum;
             }
-
-            currentPage = pageNum;
+        } catch (Exception e) {
+            LogUtils.e(e);
         }
     }
 
@@ -277,7 +286,7 @@ public class MuPDFCore {
         LogUtils.i(TAG, "MuPDFCore.addWaterMark 添加水印 update=" + update);
     }
 
-    public void addFreeText(int pageNum, int width, int height,String text){
+    public void addFreeText(int pageNum, int width, int height, String text) {
         Page page = doc.loadPage(pageNum);
         Rect bounds = page.getBounds();
         float realWidth = bounds.x1 - bounds.x0;
@@ -289,7 +298,7 @@ public class MuPDFCore {
 
     public void addAnnotation(int pageNum, int width, int height, int type, float paintSize, int paintColor, Point[] inkList) {
         try {
-            LogUtils.i(TAG, "MuPDFCore.addAnnotation: pageNum:" + pageNum+",paintSize="+paintSize);
+            LogUtils.i(TAG, "MuPDFCore.addAnnotation: pageNum:" + pageNum + ",paintSize=" + paintSize);
             Page page = doc.loadPage(pageNum);
             Rect bounds = page.getBounds();
             float realWidth = bounds.x1 - bounds.x0;
@@ -505,7 +514,7 @@ public class MuPDFCore {
         }
     }
 
-    private String nowDate(){
+    private String nowDate() {
         Date date = new Date(System.currentTimeMillis());
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         return format.format(date);

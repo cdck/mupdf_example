@@ -15,7 +15,7 @@ publishing {
 //            from components.release // 或 components.debug 依据你发布的构建变体
             groupId 'com.xlk.library'
             artifactId 'mupdf'
-            version '1.0'
+            version '1.1'
 
             pom {
                 packaging = "aar"
