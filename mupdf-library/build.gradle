@@ -84,6 +84,19 @@ publishing {
     }
 }
 
+//afterEvaluate {
+//    publishing {
+//        publications {
+//            create<MavenPublication>("maven") {
+//                from (components["release"])
+//                groupId = "com.github.cdck"
+//                artifactId = "mupdf-example"
+//                version = "1.2"
+//            }
+//        }
+//    }
+//}
+
 android {
     namespace 'com.xlk.mupdf.library'
     compileSdk 31
@@ -136,7 +149,6 @@ android {
     makeJar.dependsOn(build)
     */
 }
-
 
 dependencies {
 
