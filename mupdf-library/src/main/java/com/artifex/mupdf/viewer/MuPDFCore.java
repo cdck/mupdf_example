@@ -119,7 +119,7 @@ public class MuPDFCore {
                     try {
                         page.destroy();
                     } catch (Exception e) {
-                        LogUtils.e(e);
+                        LogUtils.e("page destroy 异常："+e);
                     }
                 }
                 page = null;
