@@ -114,6 +114,7 @@ public class MuPdfDocumentActivity extends AppCompatActivity {
      */
     private boolean isSigning;
     private SwitchCompat switch_upload;
+    private Boolean deleteFileWhenExit;
 
     /* The core rendering instance */
     enum TopBarMode {Main, More}
@@ -134,9 +135,6 @@ public class MuPdfDocumentActivity extends AppCompatActivity {
     private ViewAnimator mTopBarSwitcher;
     private TopBarMode mTopBarMode = TopBarMode.Main;
     private AlertDialog.Builder mAlertBuilder;
-    private boolean mLinkHighlight = false;
-    private boolean mAlertsActive = false;
-    private AlertDialog mAlertDialog;
     private ArrayList<OutlineActivity.Item> mFlatOutline;
     private boolean mReturnToLibraryActivity = false;
 
@@ -167,6 +165,10 @@ public class MuPdfDocumentActivity extends AppCompatActivity {
      * 水印内容
      */
     public static final String bundle_key_watermark_content = "watermark_content";
+    /**
+     * 退出时是否删除文件
+     */
+    public static final String bundle_key_delete_file = "delete_file";
     /**
      * 文件路径
      */
@@ -311,6 +313,7 @@ public class MuPdfDocumentActivity extends AppCompatActivity {
                 Bundle bundle = intent.getBundleExtra(mupdf_bundle_key);
                 String mimetype = getIntent().getType();
                 srcFilePath = bundle.getString(bundle_key_file_path, "");
+                deleteFileWhenExit = bundle.getBoolean(bundle_key_delete_file, true);
                 Uri uri = Uri.parse(new File(srcFilePath).toURI().toString());
                 if (bundle.getBoolean(bundle_key_watermark_enable, false)) {
                     mWatermark = bundle.getString(bundle_key_watermark_content, "");
@@ -580,8 +583,9 @@ public class MuPdfDocumentActivity extends AppCompatActivity {
                     List<SignatureBoard.DrawPath> drawPaths = (List<SignatureBoard.DrawPath>) object[0];
                     RectF regionSize = (RectF) object[1];
 
-                    int scalableViewWidth = (int) (regionSize.right - regionSize.left) + 20;
-                    int scalableViewHeight = (int) (regionSize.bottom - regionSize.top) + 20;
+                    int offset = 50;
+                    int scalableViewWidth = (int) (regionSize.right - regionSize.left) + offset * 2;
+                    int scalableViewHeight = (int) (regionSize.bottom - regionSize.top) + offset * 2;
 
                     int l = width / 2 - scalableViewWidth / 2;
                     int t = Math.abs(top) + 100;
@@ -592,7 +596,7 @@ public class MuPdfDocumentActivity extends AppCompatActivity {
                             , regionSize.left, regionSize.top
                             , regionSize.right, regionSize.bottom
                             , l, t, r, b
-                            , width, height);
+                            , width, height, offset);
 
                     ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(scalableViewWidth, scalableViewHeight);
                     mScalableView.setLayoutParams(params);
@@ -887,7 +891,7 @@ public class MuPdfDocumentActivity extends AppCompatActivity {
     }
 
     private void exit() {
-        LogUtils.i(TAG,"---exit---");
+        LogUtils.i(TAG, "---exit---");
         if (saveWhenExit && hadAnnotation) {
             showLoading();
             new Thread(new Runnable() {
@@ -901,7 +905,7 @@ public class MuPdfDocumentActivity extends AppCompatActivity {
                         hideLoading("");
                         MuPdfDocumentActivity.this.finish();
                     } catch (Exception e) {
-                        LogUtils.e(TAG,e.toString());
+                        LogUtils.e(TAG, e.toString());
                         e.printStackTrace();
                     }
                 }
@@ -1009,12 +1013,13 @@ public class MuPdfDocumentActivity extends AppCompatActivity {
         if (core != null)
             core.onDestroy();
         core = null;
-
-        if (srcFilePath != null && !srcFilePath.isEmpty()) {
-            File file = new File(srcFilePath);
-            if (file.exists()) {
-                boolean delete = file.delete();
-                LogUtils.i("退出pdf预览时删除源文件：" + delete);
+        if (deleteFileWhenExit) {
+            if (srcFilePath != null && !srcFilePath.isEmpty()) {
+                File file = new File(srcFilePath);
+                if (file.exists()) {
+                    boolean delete = file.delete();
+                    LogUtils.i("退出pdf预览时删除源文件：" + delete);
+                }
             }
         }
         super.onDestroy();

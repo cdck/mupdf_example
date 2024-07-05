@@ -78,6 +78,11 @@ public class ReaderView
      * 是否正在批注中，=true时不拦截触摸事件
      */
     private boolean isInAnnotation;
+    /**
+     * <li>签名期间禁止缩放页面</li>
+     * <li>签名期间禁止通过惯性拖动进行翻页</li>
+     * <li>签名期间禁止通过滑动翻页</li>
+     */
     private boolean isSigning;
 
     public void setSigning(boolean isSigning) {
@@ -367,8 +372,8 @@ public class ReaderView
 
 //        mScale = mDefaultScale;
 //        mXScroll = mYScroll = 0;
-
-        //所有的页面视图都需要重新创建，因为页面和屏幕的尺寸都发生了变化，使尺寸和位图都失效了。
+//
+//        //所有的页面视图都需要重新创建，因为页面和屏幕的尺寸都发生了变化，使尺寸和位图都失效了。
 //        mAdapter.refresh();
 //        int numChildren = mChildViews.size();
 //        for (int i = 0; i < mChildViews.size(); i++) {
@@ -378,8 +383,8 @@ public class ReaderView
 //        }
 //        mChildViews.clear();
 //        mViewCache.clear();
-
-        requestLayout();
+//
+//        requestLayout();
 
         View v = mChildViews.get(mCurrent);
         if (v != null)
@@ -557,6 +562,8 @@ public class ReaderView
     }
 
     public boolean onScale(ScaleGestureDetector detector) {
+        /* *** 签名期间禁止缩放页面 *** */
+        if (isSigning) return false;
         float previousScale = mScale;
         float scaleFactor = detector.getScaleFactor();
         mScale = Math.min(Math.max(mScale * scaleFactor, MIN_SCALE), MAX_SCALE);
@@ -594,8 +601,8 @@ public class ReaderView
                 requestLayout();
             }
         }
-//        return true;
-        return !isSigning;
+        return true;
+//        return !isSigning;
     }
 
     public boolean onScaleBegin(ScaleGestureDetector detector) {
@@ -847,6 +854,7 @@ public class ReaderView
             }
         }
 
+        Log.i(TAG, "ReaderView.onLayout2: end");
         invalidate();
     }
 
@@ -961,6 +969,8 @@ public class ReaderView
     }
 
     private void slideViewOntoScreen(View v) {
+        /* *** 签名期间禁止通过滑动、惯性拖动进行翻页 *** */
+        if (isSigning) return;
         Point corr = getCorrection(getScrollBounds(v));
         if (corr.x != 0 || corr.y != 0) {
             mScrollerLastX = mScrollerLastY = 0;

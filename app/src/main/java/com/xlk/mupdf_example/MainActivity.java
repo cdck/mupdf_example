@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     public void openAssetsFile(View view) {
         Bundle bundle = new Bundle();
         bundle.putString(MuPdfDocumentActivity.bundle_key_file_path, this.getExternalCacheDir().getAbsolutePath() + File.separator + "abcde.pdf");
+        bundle.putBoolean(MuPdfDocumentActivity.bundle_key_delete_file, false);
         MuPdfDocumentActivity.jump(this, bundle);
     }
 }

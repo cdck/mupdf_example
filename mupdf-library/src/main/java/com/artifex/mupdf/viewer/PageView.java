@@ -44,7 +44,7 @@ class OpaqueImageView extends ImageView {
 
     public OpaqueImageView(Context context, String watermark) {
         super(context);
-        if (watermark!=null && !watermark.isEmpty()) {
+        if (watermark != null && !watermark.isEmpty()) {
             mWaterMark = watermark;
             textPaint.setTextSize(60);
             textPaint.setColor(Color.parseColor("#66F4511E"));
@@ -495,71 +495,71 @@ public class PageView extends ViewGroup {
 //                mPatch.invalidate();
 //            }
 //        } else {
-            final Point patchViewSize = new Point(viewArea.width(), viewArea.height());
-            final Rect patchArea = new Rect(0, 0, (int) mParentSize.x, (int) mParentSize.y);
-            Log.i(TAG, "PageView.updateHq: patchViewSize:" + patchViewSize + ",patchArea:" + patchArea);
-            // 相交并测试是否有交叉点
-            if (!patchArea.intersect(viewArea))
-                return;
+        final Point patchViewSize = new Point(viewArea.width(), viewArea.height());
+        final Rect patchArea = new Rect(0, 0, (int) mParentSize.x, (int) mParentSize.y);
+        Log.i(TAG, "PageView.updateHq: patchViewSize:" + patchViewSize + ",patchArea:" + patchArea);
+        // 相交并测试是否有交叉点
+        if (!patchArea.intersect(viewArea))
+            return;
 
-            // 相对于视图左上方的偏移贴片区域
-            patchArea.offset(-viewArea.left, -viewArea.top);
+        // 相对于视图左上方的偏移贴片区域
+        patchArea.offset(-viewArea.left, -viewArea.top);
 
-            boolean area_unchanged = patchArea.equals(mPatchArea) && patchViewSize.equals(mPatchViewSize);
+        boolean area_unchanged = patchArea.equals(mPatchArea) && patchViewSize.equals(mPatchViewSize);
 
-            // 如果被要求的区域与上次相同，并且不是因为更新，则不需要做什么。
-            if (area_unchanged && !update)
-                return;
+        // 如果被要求的区域与上次相同，并且不是因为更新，则不需要做什么。
+        if (area_unchanged && !update)
+            return;
 
-            boolean completeRedraw = !(area_unchanged && update);
+        boolean completeRedraw = !(area_unchanged && update);
 
-            // 如果仍在进行，则停止绘制之前的补丁
-            if (mDrawPatch != null) {
-                mDrawPatch.cancel();
-                mDrawPatch = null;
-            }
+        // 如果仍在进行，则停止绘制之前的补丁
+        if (mDrawPatch != null) {
+            mDrawPatch.cancel();
+            mDrawPatch = null;
+        }
 
-            // 创建并添加图像视图（如果尚未完成）。
-            if (mPatch == null) {
-                mPatch = new OpaqueImageView(mContext, mWaterMark);
-                mPatch.setScaleType(ImageView.ScaleType.MATRIX);
-                addView(mPatch);
-                if (mSearchView != null)
-                    mSearchView.bringToFront();
-            }
+        // 创建并添加图像视图（如果尚未完成）。
+        if (mPatch == null) {
+            mPatch = new OpaqueImageView(mContext, mWaterMark);
+            mPatch.setScaleType(ImageView.ScaleType.MATRIX);
+            addView(mPatch);
+            if (mSearchView != null)
+                mSearchView.bringToFront();
+        }
 
-            CancellableTaskDefinition<Void, Boolean> task;
-            Log.i(TAG, "PageView.updateHq: completeRedraw:" + completeRedraw + ",update:" + update);
-            if (completeRedraw)
-                task = getDrawPageTask(mPatchBm, patchViewSize.x, patchViewSize.y,
-                        patchArea.left, patchArea.top,
-                        patchArea.width(), patchArea.height());
-            else
-                task = getUpdatePageTask(mPatchBm, patchViewSize.x, patchViewSize.y,
-                        patchArea.left, patchArea.top,
-                        patchArea.width(), patchArea.height());
+        CancellableTaskDefinition<Void, Boolean> task;
+        Log.i(TAG, "PageView.updateHq: completeRedraw:" + completeRedraw + ",update:" + update);
+        if (completeRedraw)
+            task = getDrawPageTask(mPatchBm, patchViewSize.x, patchViewSize.y,
+                    patchArea.left, patchArea.top,
+                    patchArea.width(), patchArea.height());
+        else
+            task = getUpdatePageTask(mPatchBm, patchViewSize.x, patchViewSize.y,
+                    patchArea.left, patchArea.top,
+                    patchArea.width(), patchArea.height());
 
-            mDrawPatch = new CancellableAsyncTask<Void, Boolean>(task) {
+        mDrawPatch = new CancellableAsyncTask<Void, Boolean>(task) {
 
-                public void onPostExecute(Boolean result) {
-                    if (result.booleanValue()) {
-                        mPatchViewSize = patchViewSize;
-                        mPatchArea = patchArea;
-                        clearRenderError();
-                        mPatch.setImageBitmap(mPatchBm);
-                        mPatch.invalidate();
-                        Log.i(TAG, "PageView.onPostExecute: updateHq mDrawPatch");
-                        //requestLayout();
-                        // 在这里调用requestLayout并不会导致后来对layout的调用。
-                        // 不知道为什么，但显然其他人遇到了这个问题。
-                        mPatch.layout(mPatchArea.left, mPatchArea.top, mPatchArea.right, mPatchArea.bottom);
-                    } else {
-                        setRenderError("Error rendering patch");
-                    }
+            public void onPostExecute(Boolean result) {
+                if (result.booleanValue()) {
+                    mPatchViewSize = patchViewSize;
+                    mPatchArea = patchArea;
+                    clearRenderError();
+                    mPatch.setImageBitmap(mPatchBm);
+                    mPatch.invalidate();
+                    Log.i(TAG, "PageView.onPostExecute: updateHq mDrawPatch");
+                    //requestLayout();
+                    // 在这里调用requestLayout并不会导致后来对layout的调用。
+                    // 不知道为什么，但显然其他人遇到了这个问题。
+                    mPatch.layout(mPatchArea.left, mPatchArea.top, mPatchArea.right, mPatchArea.bottom);
+                } else {
+                    setRenderError("Error rendering patch");
                 }
-            };
+            }
+        };
 
-            mDrawPatch.execute();
+        mDrawPatch.execute();
 //        }
     }
 
@@ -580,7 +580,7 @@ public class PageView extends ViewGroup {
 
             public void onPostExecute(Boolean result) {
                 if (result.booleanValue()) {
-//                    Log.i(TAG, "PageView.onPostExecute: update mDrawEntire");
+                    Log.i(TAG, "PageView.onPostExecute: update mDrawEntire");
                     clearRenderError();
                     mEntire.setImageBitmap(mEntireBm);
                     mEntire.invalidate();

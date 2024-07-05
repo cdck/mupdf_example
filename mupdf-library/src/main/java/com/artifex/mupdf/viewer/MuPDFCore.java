@@ -114,33 +114,40 @@ public class MuPDFCore {
                 pageNum = pageCount - 1;
             else if (pageNum < 0)
                 pageNum = 0;
-            if (pageNum != currentPage) {
-                if (page != null) {
-                    try {
-                        page.destroy();
-                    } catch (Exception e) {
-                        LogUtils.e("page destroy 异常："+e);
-                    }
+            LogUtils.e(TAG, "gotoPage currentPage=" + currentPage + "=pageNum =" + pageNum + ",samePage:" + (currentPage == pageNum));
+            /* *** 如果签名未完成期间激活了页面跳转，会概率性崩溃在page.destroy() *** */
+//            if (pageNum != currentPage) {
+            if (page != null) {
+                try {
+                    LogUtils.d("page destroy start");
+                    page.destroy();
+                    LogUtils.d("page destroy end");
+                } catch (Exception e) {
+                    LogUtils.e("page destroy 异常：" + e);
                 }
-                page = null;
-                if (displayList != null)
-                    displayList.destroy();
-                displayList = null;
-                page = null;
-                pageWidth = 0;
-                pageHeight = 0;
-                currentPage = -1;
-
-                if (doc != null) {
-                    page = doc.loadPage(pageNum);
-                    Rect b = page.getBounds();
-                    pageWidth = b.x1 - b.x0;
-                    pageHeight = b.y1 - b.y0;
-                    LogUtils.i(TAG, "gotoPage: pageNum:" + pageNum + ",pageWidth:" + pageWidth + ",pageHeight:" + pageHeight);
-                }
-
-                currentPage = pageNum;
             }
+            page = null;
+            if (displayList != null)
+                displayList.destroy();
+            displayList = null;
+            page = null;
+            pageWidth = 0;
+            pageHeight = 0;
+            currentPage = -1;
+
+            if (doc != null) {
+                LogUtils.i(TAG, "gotoPage: loadPage pageNum:" + pageNum);
+                page = doc.loadPage(pageNum);
+                Rect b = page.getBounds();
+                pageWidth = b.x1 - b.x0;
+                pageHeight = b.y1 - b.y0;
+                LogUtils.i(TAG, "gotoPage: pageNum:" + pageNum + ",pageWidth:" + pageWidth + ",pageHeight:" + pageHeight);
+            } else {
+                LogUtils.i(TAG, "gotoPage: doc is null");
+            }
+
+            currentPage = pageNum;
+//            }
         } catch (Exception e) {
             LogUtils.e(e);
         }
@@ -169,44 +176,51 @@ public class MuPDFCore {
                                       int patchX, int patchY,
                                       int patchW, int patchH,
                                       Cookie cookie) {
-        gotoPage(pageNum);
-
-        if (displayList == null && page != null)
-            try {
-                displayList = page.toDisplayList();
-            } catch (Exception ex) {
-                displayList = null;
-            }
-
-        if (displayList == null || page == null)
-            return;
-        float zoom = resolution / 72;
-        Matrix ctm = new Matrix(zoom, zoom);
-        Rect bounds = page.getBounds();
-        RectI bbox = new RectI(bounds.transform(ctm));
-        float xscale = (float) pageW / (float) (bbox.x1 - bbox.x0);
-        float yscale = (float) pageH / (float) (bbox.y1 - bbox.y0);
-        ctm.scale(xscale, yscale);
-        LogUtils.e(TAG, "MuPDFCore.drawPage: pageNum:" + pageNum
-                + "\npageW:" + pageW + ",pageH:" + pageH
-                + "\npatchW:" + patchW + ",patchH:" + patchH
-                + "\npatchX:" + patchX + ",patchY:" + patchY
-                + "\nbounds:" + bounds
-                + "\nbbox:" + bbox
-                + "\nctm:" + ctm
-                + "\nxscale:" + xscale + ",yscale:" + yscale
-                + "\nbm:" + bm.getWidth() + "," + bm.getHeight());
         try {
-            throw new Exception("哪里调用");
+            LogUtils.d(TAG, "---MuPDFCore.drawPage gotoPage---");
+            gotoPage(pageNum);
+
+            if (displayList == null && page != null)
+                try {
+                    displayList = page.toDisplayList();
+                } catch (Exception ex) {
+                    displayList = null;
+                }
+
+            if (displayList == null || page == null)
+                return;
+            float zoom = resolution / 72;
+            Matrix ctm = new Matrix(zoom, zoom);
+            LogUtils.i(TAG, "---MuPDFCore.drawPage getBounds---");
+            Rect bounds = page.getBounds();
+            RectI bbox = new RectI(bounds.transform(ctm));
+            float xscale = (float) pageW / (float) (bbox.x1 - bbox.x0);
+            float yscale = (float) pageH / (float) (bbox.y1 - bbox.y0);
+            ctm.scale(xscale, yscale);
+            LogUtils.e(TAG, "MuPDFCore.drawPage: pageNum:" + pageNum
+                    + "\npageW:" + pageW + ",pageH:" + pageH
+                    + "\npatchW:" + patchW + ",patchH:" + patchH
+                    + "\npatchX:" + patchX + ",patchY:" + patchY
+                    + "\nbounds:" + bounds
+                    + "\nbbox:" + bbox
+                    + "\nctm:" + ctm
+                    + "\nxscale:" + xscale + ",yscale:" + yscale
+                    + "\nbm:" + bm.getWidth() + "," + bm.getHeight());
+            try {
+                throw new Exception("哪里调用");
+            } catch (Exception e) {
+                LogUtils.e(e);
+            }
+            AndroidDrawDevice dev = new AndroidDrawDevice(bm, patchX, patchY);
+            try {
+                displayList.run(dev, ctm, cookie);
+                LogUtils.d(TAG, "---MuPDFCore.drawPage end---");
+                dev.close();
+            } finally {
+                dev.destroy();
+            }
         } catch (Exception e) {
             LogUtils.e(e);
-        }
-        AndroidDrawDevice dev = new AndroidDrawDevice(bm, patchX, patchY);
-        try {
-            displayList.run(dev, ctm, cookie);
-            dev.close();
-        } finally {
-            dev.destroy();
         }
     }
 

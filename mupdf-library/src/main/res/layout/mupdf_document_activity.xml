@@ -43,7 +43,14 @@
                 android:singleLine="true"
                 android:textColor="@android:color/white"
                 android:textSize="16sp"
-                tools:text="文件名称文件名称文件名称文件名称文件名称文件名称文件名称文件名称.pdf" />
+                tools:text="文件名称文件名称文件名称文件.pdf" />
+
+            <ImageButton
+                android:id="@+id/screenshotButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button"
+                android:src="@drawable/ic_mupdf_screenshot_white" />
 
             <androidx.appcompat.widget.SwitchCompat
                 android:id="@+id/switch_upload"
@@ -61,13 +68,6 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/button"
                 android:src="@drawable/ic_mupdf_refresh" />
-
-            <ImageButton
-                android:id="@+id/screenshotButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/button"
-                android:src="@drawable/ic_mupdf_screenshot_white" />
 
             <ImageButton
                 android:id="@+id/signatureButton"
