@@ -3,15 +3,16 @@ pluginManagement {
         google()
         mavenCentral()
         gradlePluginPortal()
-        maven {
-            url 'http://127.0.0.1:8081/repository/localRepository/'
-            credentials {
-                username "admin"
-                password "cdck5689"
-            }
-            //通过不安全的HTTP连接与仓库通信是否可接受
-            allowInsecureProtocol = true
-        }
+        maven { url 'https://jitpack.io' }
+//        maven {
+//            url 'http://127.0.0.1:8081/repository/localRepository/'
+//            credentials {
+//                username "admin"
+//                password "cdck5689"
+//            }
+//            //通过不安全的HTTP连接与仓库通信是否可接受
+//            allowInsecureProtocol = true
+//        }
     }
 }
 dependencyResolutionManagement {
@@ -19,13 +20,14 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven {
-            url 'http://127.0.0.1:8081/repository/localRepository/'
-            credentials {
-                username "admin"
-                password "cdck5689"
-            }
-        }
+        maven { url 'https://jitpack.io' }
+//        maven {
+//            url 'http://127.0.0.1:8081/repository/localRepository/'
+//            credentials {
+//                username "admin"
+//                password "cdck5689"
+//            }
+//        }
     }
 }
 rootProject.name = "mupdf_example"

@@ -47,4 +47,5 @@ dependencies {
 
     implementation(project(":mupdf-library"))
 //    implementation 'com.xlk.library:mupdf:2.0'
+//    implementation 'com.github.cdck:mupdf-example:3.0'
 }
