@@ -45,6 +45,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
+//    implementation 'com.github.cdck:mupdf_example:3.0'
     implementation(project(":mupdf-library"))
 //    implementation 'com.xlk.library:mupdf:2.0'
 //    implementation 'com.github.cdck:mupdf-example:3.0'

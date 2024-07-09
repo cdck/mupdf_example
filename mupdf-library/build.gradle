@@ -8,7 +8,7 @@ plugins {
 
 def aar_name = "mupdflibrary.aar"
 
-/*
+///*
 // Terminal 中输入 ./gradlew publish 回车后即可上传到本地库
 publishing {
     publications {
@@ -16,7 +16,7 @@ publishing {
 //            from components.release // 或 components.debug 依据你发布的构建变体
             groupId 'com.xlk.library'
             artifactId 'mupdf'
-            version '3.0'
+            version '4.0'
 
             pom {
                 packaging = "aar"
@@ -84,9 +84,8 @@ publishing {
         }
     }
 }
-/*
+///*
 
- */
 //afterEvaluate {
 //    publishing {
 //        publications {
@@ -169,31 +168,3 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.3'
     implementation 'org.greenrobot:eventbus:3.3.1'
 }
-
-// 4、依赖包发布配置信息
-    publishing {
-        publications {
-            release(MavenPublication) {
-                // 发布后的依赖包按如下配置进行引用：com.github.AndroidAppCodeDemo:jitpack_MultiFlavorLibDemo:1.0.2
-                //from components.vendor // 表示发布 release
-                artifact("$buildDir/outputs/aar/$aar_name")
-                groupId = 'com.github.cdck' // 这个是依赖库的组 id
-                artifactId = 'mupdf_example' // 依赖库的名称
-                version = "3.0"     // 当前版本依赖库版本号
-            }
-        }
-//        repositories {
-//            maven {
-//                def baseUrl = buildDir.getParent()
-//                def releasesRepoUrl = "$baseUrl/repos/releases"
-//                def snapshotsRepoUrl = "$baseUrl/repos/snapshots"
-//                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-//            }
-//        }
-    }
-//}
-//// 5、生成source jar
-//task generateSourcesJar(type: Jar) {
-//    from android.sourceSets.main.java.srcDirs
-//    classifier 'sources'
-//}

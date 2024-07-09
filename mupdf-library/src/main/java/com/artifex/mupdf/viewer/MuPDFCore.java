@@ -5,7 +5,6 @@ import static com.artifex.mupdf.fitz.PDFAnnotation.TYPE_LINE;
 import static com.artifex.mupdf.fitz.PDFAnnotation.TYPE_SCREEN;
 import static com.artifex.mupdf.fitz.PDFAnnotation.TYPE_SQUARE;
 import static com.artifex.mupdf.fitz.PDFAnnotation.TYPE_WATERMARK;
-import static com.xlk.mupdf.library.Config.TAG;
 
 import android.graphics.Bitmap;
 import android.graphics.Path;
@@ -39,6 +38,7 @@ import java.util.Date;
 import java.util.List;
 
 public class MuPDFCore {
+    private static final String TAG = "MuPDFCore";
     private int resolution;
     private Document doc;
     private Outline[] outline;
@@ -159,16 +159,21 @@ public class MuPDFCore {
     }
 
     public synchronized void onDestroy() {
-        LogUtils.i(TAG, "onDestroy: ");
-        if (displayList != null)
-            displayList.destroy();
-        displayList = null;
-        if (page != null)
-            page.destroy();
-        page = null;
-        if (doc != null)
-            doc.destroy();
-        doc = null;
+        LogUtils.i(TAG, "onDestroy: start");
+        try {
+            if (displayList != null)
+                displayList.destroy();
+            displayList = null;
+            if (page != null)
+                page.destroy();
+            page = null;
+            if (doc != null)
+                doc.destroy();
+            doc = null;
+            LogUtils.i(TAG, "onDestroy: end");
+        }catch (Exception e){
+            LogUtils.e(e);
+        }
     }
 
     public synchronized void drawPage(Bitmap bm, int pageNum,

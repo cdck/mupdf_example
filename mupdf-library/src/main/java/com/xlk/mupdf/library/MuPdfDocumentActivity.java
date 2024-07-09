@@ -1000,6 +1000,7 @@ public class MuPdfDocumentActivity extends AppCompatActivity {
     }
 
     public void onDestroy() {
+        LogUtils.i(TAG,"---onDestroy---start");
         mainHandler.removeCallbacksAndMessages(null);
         mainHandler = null;
         if (mDocView != null) {
@@ -1022,6 +1023,7 @@ public class MuPdfDocumentActivity extends AppCompatActivity {
                 }
             }
         }
+        LogUtils.i(TAG,"---onDestroy---end");
         super.onDestroy();
     }
 
