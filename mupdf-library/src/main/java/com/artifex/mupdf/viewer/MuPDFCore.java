@@ -167,8 +167,8 @@ public class MuPDFCore {
             if (page != null)
                 page.destroy();
             page = null;
-            if (doc != null)
-                doc.destroy();
+//            if (doc != null)
+//                doc.destroy();
             doc = null;
             LogUtils.i(TAG, "onDestroy: end");
         }catch (Exception e){
