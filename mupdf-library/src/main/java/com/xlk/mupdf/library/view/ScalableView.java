@@ -324,7 +324,7 @@ public class ScalableView extends View implements View.OnTouchListener {
         int top = getTop();
         if (left + newWidth > parentW) return false;
         if ((top + newHeight > parentH)) return false;
-        if (newWidth < 300 || newHeight < 200) return false;
+        if (newWidth < 100 || newHeight < 100) return false;
         return true;
     }
 }
