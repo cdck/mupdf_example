@@ -96,7 +96,7 @@ afterEvaluate {
 
                 groupId = 'com.github.cdck'
                 artifactId = 'mupdf-example'
-                version = '7.0'
+                version = '8.0'
             }
         }
         repositories {
@@ -106,6 +106,21 @@ afterEvaluate {
         }
     }
 }
+
+//afterEvaluate {
+//    publishing {
+//        publications {
+//            create<MavenPublication>("maven") {
+//                //from (components["release"])
+//                artifact("$buildDir/outputs/aar/$aar_name")
+//                groupId = "com.github.cdck"
+//                artifactId = "mupdf-example"
+//                version = "7.0"
+//            }
+//        }
+//    }
+//}
+
 
 android {
     namespace 'com.xlk.mupdf.library'
