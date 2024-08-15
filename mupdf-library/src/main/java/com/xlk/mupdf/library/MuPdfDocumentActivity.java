@@ -32,7 +32,6 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.EditorInfo;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -115,6 +114,11 @@ public class MuPdfDocumentActivity extends AppCompatActivity {
     private boolean isSigning;
     private SwitchCompat switch_upload;
     private Boolean deleteFileWhenExit;
+    private Boolean isOnlyPreview;
+    /**
+     * 批注后上传的目录id
+     */
+    private int uploadDirId = 2;
 
     /* The core rendering instance */
     enum TopBarMode {Main, More}
@@ -173,6 +177,14 @@ public class MuPdfDocumentActivity extends AppCompatActivity {
      * 文件路径
      */
     public static final String bundle_key_file_path = "filePath";
+    /**
+     * 批注后上传的目录id
+     */
+    public static final String bundle_key_upload_dirId = "upload_dirId";
+    /**
+     * 是否只预览
+     */
+    public static final String bundle_key_only_preview = "only_preview";
 
     public static void jump(Context context, Bundle bundle) {
         Intent intent = new Intent(context, MuPdfDocumentActivity.class);
@@ -306,7 +318,6 @@ public class MuPdfDocumentActivity extends AppCompatActivity {
         if (core == null) {
             Intent intent = getIntent();
 
-
             mReturnToLibraryActivity = intent.getIntExtra(getComponentName().getPackageName() + ".ReturnToLibraryActivity", 0) != 0;
 
             if (Intent.ACTION_VIEW.equals(intent.getAction())) {
@@ -314,10 +325,21 @@ public class MuPdfDocumentActivity extends AppCompatActivity {
                 String mimetype = getIntent().getType();
                 srcFilePath = bundle.getString(bundle_key_file_path, "");
                 deleteFileWhenExit = bundle.getBoolean(bundle_key_delete_file, true);
+                isOnlyPreview = bundle.getBoolean(bundle_key_only_preview, false);
+                uploadDirId = bundle.getInt(bundle_key_upload_dirId, 2);
                 Uri uri = Uri.parse(new File(srcFilePath).toURI().toString());
-                if (bundle.getBoolean(bundle_key_watermark_enable, false)) {
+                boolean watermark = bundle.getBoolean(bundle_key_watermark_enable, false);
+                if (watermark) {
                     mWatermark = bundle.getString(bundle_key_watermark_content, "");
                 }
+                LogUtils.i(TAG,"打开pdf文件 bundle："
+                        + "\nsrcFilePath=" + srcFilePath
+                        + "\ndeleteFileWhenExit=" + deleteFileWhenExit
+                        + "\nisOnlyPreview=" + isOnlyPreview
+                        + "\nuploadDirId=" + uploadDirId
+                        + "\nwatermark=" + watermark
+                        + "\nmWatermark=" + mWatermark
+                );
 
                 if (uri == null) {
                     showCannotOpenDialog("No document uri to open");
@@ -901,7 +923,7 @@ public class MuPdfDocumentActivity extends AppCompatActivity {
                         long l = System.currentTimeMillis();
                         String savePath = core.save(srcFilePath, getExternalFilesDir("批注文件").getAbsolutePath());
                         LogUtils.i(TAG, "保存用时：" + (System.currentTimeMillis() - l) + ",savePath=" + savePath);
-                        EventBus.getDefault().post(new MupdfEventMessage.Builder().type(MupdfBusType.inform_upload).objects(savePath).build());
+                        EventBus.getDefault().post(new MupdfEventMessage.Builder().type(MupdfBusType.inform_upload).objects(savePath, uploadDirId).build());
                         hideLoading("");
                         MuPdfDocumentActivity.this.finish();
                     } catch (Exception e) {
@@ -1000,7 +1022,7 @@ public class MuPdfDocumentActivity extends AppCompatActivity {
     }
 
     public void onDestroy() {
-        LogUtils.i(TAG,"---onDestroy---start");
+        LogUtils.i(TAG, "---onDestroy---start");
         mainHandler.removeCallbacksAndMessages(null);
         mainHandler = null;
         if (mDocView != null) {
@@ -1023,7 +1045,7 @@ public class MuPdfDocumentActivity extends AppCompatActivity {
                 }
             }
         }
-        LogUtils.i(TAG,"---onDestroy---end");
+        LogUtils.i(TAG, "---onDestroy---end");
         super.onDestroy();
     }
 
@@ -1243,6 +1265,13 @@ public class MuPdfDocumentActivity extends AppCompatActivity {
         inkSizeSeekBar = mButtonsView.findViewById(R.id.inkSizeSeekBar);
         inkSizeTextView = mButtonsView.findViewById(R.id.inkSizeTextView);
         inkOperationLayout.setVisibility(View.INVISIBLE);
+
+        if (isOnlyPreview) {
+            screenshotButton.setVisibility(View.GONE);
+            switch_upload.setVisibility(View.GONE);
+            signatureButton.setVisibility(View.GONE);
+            mAnnotationButton.setVisibility(View.GONE);
+        }
     }
 
     @Override

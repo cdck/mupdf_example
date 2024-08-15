@@ -10,102 +10,107 @@ def aar_name = "mupdflibrary.aar"
 
 
 // Terminal 中输入 ./gradlew publish 回车后即可上传到本地库
-//publishing {
-//    publications {
-//        maven(MavenPublication) {
-////            from components.release // 或 components.debug 依据你发布的构建变体
-//            groupId 'com.xlk.library'
-//            artifactId 'mupdf'
-//            version '6.0'
-//
-//            pom {
-//                packaging = "aar"
-//                licenses {
-//                    license {
-//                        name = 'The Apache License, Version 2.0'
-//                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-//                    }
-//                }
-//            }
-//            //带上依赖 ，否则会报错
-//            pom.withXml {
-//                def dependenciesNode = asNode().appendNode('dependencies')
-//
-//                def scopes = [configurations.implementation]
-//                if (configurations.hasProperty("api")) {
-//                    scopes.add(configurations.api)
-//                }
-//                if (configurations.hasProperty("implementation")) {
-//                    scopes.add(configurations.implementation)
-//                }
-//                if (configurations.hasProperty("debugImplementation")) {
-//                    scopes.add(configurations.debugImplementation)
-//                }
-//                if (configurations.hasProperty("releaseImplementation")) {
-//                    scopes.add(configurations.releaseImplementation)
-//                }
-//                scopes.each { scope ->
-//                    scope.allDependencies.each {
-//                        if (it instanceof ModuleDependency) {
-//                            boolean isTransitive = ((ModuleDependency) it).transitive
-//                            if (!isTransitive) {
-//                                println "<<<< not transitive dependency: [${it.group}, ${it.name}, ${it.version}]"
-//                                return
-//                            }
-//                        }
-//
-//                        if (it.group == "${project.rootProject.name}.libs" || it.version == 'unspecified') {
-//                            return
-//                        }
-//
-//                        if (it.group && it.name && it.version) {
-//                            def dependencyNode = dependenciesNode.appendNode('dependency')
-//                            dependencyNode.appendNode('groupId', it.group)
-//                            dependencyNode.appendNode('artifactId', it.name)
-//                            dependencyNode.appendNode('version', it.version)
-//                            dependencyNode.appendNode('scope', scope.name)
-//                        }
-//                    }
-//                }
-//            }
-////            artifact androidSourcesJar//将源码打包进aar，如果不需要可以去掉
-////            artifact androidJavadocsJar//将注释打包进aar，如果不需要可以去掉
-//            artifact("$buildDir/outputs/aar/$aar_name")
-//            //artifact("$buildDir/outputs/aar/${project.getName()}-release.aar")
-//        }
-//    }
-//    repositories {
-//        maven {
-//            url "http://127.0.0.1:8081/repository/localRepository/"
-//            credentials {
-//                username 'admin'
-//                password 'cdck5689'
-//            }
-//        }
-//    }
-//}
+publishing {
+    publications {
+        maven(MavenPublication) {
+//            from components.release // 或 components.debug 依据你发布的构建变体
+            groupId 'com.xlk.library'
+            artifactId 'mupdf'
+            version '8.0'
 
-
-afterEvaluate {
-    publishing {
-        publications {
-            // Creates a Maven publication called "release".
-            release(MavenPublication) {
-//                from components.release
-                artifact("$buildDir/outputs/aar/$aar_name")
-
-                groupId = 'com.github.cdck'
-                artifactId = 'mupdf-example'
-                version = '8.0'
+            pom {
+                packaging = "aar"
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
             }
+            //带上依赖 ，否则会报错
+            pom.withXml {
+                def dependenciesNode = asNode().appendNode('dependencies')
+
+                def scopes = [configurations.implementation]
+                if (configurations.hasProperty("api")) {
+                    scopes.add(configurations.api)
+                }
+                if (configurations.hasProperty("implementation")) {
+                    scopes.add(configurations.implementation)
+                }
+                if (configurations.hasProperty("debugImplementation")) {
+                    scopes.add(configurations.debugImplementation)
+                }
+                if (configurations.hasProperty("releaseImplementation")) {
+                    scopes.add(configurations.releaseImplementation)
+                }
+                scopes.each { scope ->
+                    scope.allDependencies.each {
+                        if (it instanceof ModuleDependency) {
+                            boolean isTransitive = ((ModuleDependency) it).transitive
+                            if (!isTransitive) {
+                                println "<<<< not transitive dependency: [${it.group}, ${it.name}, ${it.version}]"
+                                return
+                            }
+                        }
+
+                        if (it.group == "${project.rootProject.name}.libs" || it.version == 'unspecified') {
+                            return
+                        }
+
+                        if (it.group && it.name && it.version) {
+                            def dependencyNode = dependenciesNode.appendNode('dependency')
+                            dependencyNode.appendNode('groupId', it.group)
+                            dependencyNode.appendNode('artifactId', it.name)
+                            dependencyNode.appendNode('version', it.version)
+                            dependencyNode.appendNode('scope', scope.name)
+                        }
+                    }
+                }
+            }
+//            artifact androidSourcesJar//将源码打包进aar，如果不需要可以去掉
+//            artifact androidJavadocsJar//将注释打包进aar，如果不需要可以去掉
+            artifact("$buildDir/outputs/aar/$aar_name")
+            //artifact("$buildDir/outputs/aar/${project.getName()}-release.aar")
         }
-        repositories {
-            maven {
-                url "https://jitpack.io"
+    }
+    repositories {
+        maven {
+            url "http://127.0.0.1:8081/repository/localRepository/"
+            credentials {
+                username 'admin'
+                password 'cdck5689'
             }
         }
     }
 }
+
+
+//afterEvaluate {
+//    publishing {
+//        publications {
+//            // Creates a Maven publication called "release".
+//            release(MavenPublication) {
+////                from components.release
+//                artifact("$buildDir/outputs/aar/$aar_name")
+//
+//                groupId = 'com.github.cdck'
+//                artifactId = 'mupdf-example'
+//                version = '8.0'
+//            }
+//        }
+//        repositories {
+//            maven {
+//                url "https://jitpack.io"
+//                // Uncomment and set your credentials if required
+//                 credentials {
+//                     username = "xlk214501580@163.com"
+//                     password = "cdck5689"
+//                 }
+//            }
+//        }
+//    }
+//}
 
 //afterEvaluate {
 //    publishing {
