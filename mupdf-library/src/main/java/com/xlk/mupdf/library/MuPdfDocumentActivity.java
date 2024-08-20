@@ -332,7 +332,7 @@ public class MuPdfDocumentActivity extends AppCompatActivity {
                 if (watermark) {
                     mWatermark = bundle.getString(bundle_key_watermark_content, "");
                 }
-                LogUtils.i(TAG,"打开pdf文件 bundle："
+                LogUtils.i(TAG, "打开pdf文件 bundle："
                         + "\nsrcFilePath=" + srcFilePath
                         + "\ndeleteFileWhenExit=" + deleteFileWhenExit
                         + "\nisOnlyPreview=" + isOnlyPreview
@@ -425,12 +425,14 @@ public class MuPdfDocumentActivity extends AppCompatActivity {
             alert.setButton(AlertDialog.BUTTON_POSITIVE, getString(R.string.dismiss),
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
+                            deleteFileWhenExit = true;
                             finish();
                         }
                     });
             alert.setOnCancelListener(new DialogInterface.OnCancelListener() {
                 @Override
                 public void onCancel(DialogInterface dialog) {
+                    deleteFileWhenExit = true;
                     finish();
                 }
             });
