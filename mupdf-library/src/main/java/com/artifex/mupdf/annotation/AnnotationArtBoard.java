@@ -1,10 +1,9 @@
 package com.artifex.mupdf.annotation;
 
-import static com.xlk.mupdf.library.Config.TAG;
+import static com.xlk.mupdf.library.MupdfConfig.TAG;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -23,7 +22,7 @@ import com.artifex.mupdf.fitz.PDFAnnotation;
 import com.artifex.mupdf.fitz.Point;
 import com.artifex.mupdf.viewer.MuPDFCore;
 import com.artifex.mupdf.viewer.ReaderView;
-import com.xlk.mupdf.library.Config;
+import com.xlk.mupdf.library.MupdfConfig;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -366,7 +365,7 @@ public class AnnotationArtBoard extends View {
                     //橡皮搽
                     case DRAW_ERASER:
                         eraserPath(x, y);
-                        if (Config.delete_history_annotation && core != null && docView != null) {
+                        if (MupdfConfig.delete_history_annotation && core != null && docView != null) {
                             core.deleteAnnotation(docView, screenWidth, screenHeight, x, y);
                         }
                         break;

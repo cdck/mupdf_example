@@ -1,6 +1,6 @@
 package com.artifex.mupdf.viewer;
 
-import static com.xlk.mupdf.library.Config.TAG;
+import static com.xlk.mupdf.library.MupdfConfig.TAG;
 
 import com.artifex.mupdf.fitz.Link;
 import com.artifex.mupdf.util.LogUtils;

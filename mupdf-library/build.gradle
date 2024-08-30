@@ -119,6 +119,7 @@ afterEvaluate {
     }
 }*/
 
+/*
 afterEvaluate {
     android.libraryVariants.each {variant->
         publishing.publications.create(variant.name,MavenPublication){
@@ -130,7 +131,7 @@ afterEvaluate {
         }
     }
 }
-
+*/
 
 android {
     namespace 'com.xlk.mupdf.library'

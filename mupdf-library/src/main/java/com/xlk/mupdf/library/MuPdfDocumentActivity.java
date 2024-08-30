@@ -87,6 +87,7 @@ public class MuPdfDocumentActivity extends AppCompatActivity {
     private LinearLayout inkOperationLayout;
     private ImageButton revokeButton, deleteButton, penButton, inkSizeButton, lineButton, squareButton, screenshotButton, signatureButton, doneButton, exitButton;
     private String srcFilePath;
+    private boolean uploadEnable;
     private String mWatermark;
     private boolean mAnnotationVisible, mInkSizeViewVisible;
     private AnnotationArtBoard artBoard;
@@ -165,6 +166,10 @@ public class MuPdfDocumentActivity extends AppCompatActivity {
      * 水印开关
      */
     public static final String bundle_key_watermark_enable = "watermark_enable";
+    /**
+     * 批注上传开关
+     */
+    public static final String bundle_key_upload_enable = "upload_enable";
     /**
      * 水印内容
      */
@@ -324,6 +329,7 @@ public class MuPdfDocumentActivity extends AppCompatActivity {
                 Bundle bundle = intent.getBundleExtra(mupdf_bundle_key);
                 String mimetype = getIntent().getType();
                 srcFilePath = bundle.getString(bundle_key_file_path, "");
+                uploadEnable = bundle.getBoolean(bundle_key_upload_enable, true);
                 deleteFileWhenExit = bundle.getBoolean(bundle_key_delete_file, true);
                 isOnlyPreview = bundle.getBoolean(bundle_key_only_preview, false);
                 uploadDirId = bundle.getInt(bundle_key_upload_dirId, 2);

@@ -1,6 +1,6 @@
 package com.artifex.mupdf.viewer;
 
-import static com.xlk.mupdf.library.Config.TAG;
+import static com.xlk.mupdf.library.MupdfConfig.TAG;
 
 import android.content.Context;
 import android.graphics.Bitmap;
