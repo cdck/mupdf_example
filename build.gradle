@@ -1,4 +1,14 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+//这里添加classpath，一定要放到plugins{}上方
+//buildscript {
+//    repositories {
+//        mavenCentral()
+//    }
+//    //必须添加
+//    dependencies {
+//        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+//    }
+//}
 plugins {
     id 'com.android.application' version '8.0.0' apply false
     id 'com.android.library' version '8.0.0' apply false
