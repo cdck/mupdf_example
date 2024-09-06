@@ -10,14 +10,14 @@ plugins {
 def aar_name = "mupdflibrary.aar"
 
 // Terminal 中输入 ./gradlew publish 回车后即可上传到本地库
-/*
+///*
 publishing {
     publications {
         maven(MavenPublication) {
 //            from components.release // 或 components.debug 依据你发布的构建变体
             groupId 'com.xlk.library'
             artifactId 'mupdf'
-            version '8.0'
+            version '9.0'
 
             pom {
                 packaging = "aar"
@@ -71,8 +71,8 @@ publishing {
             }
 //            artifact androidSourcesJar//将源码打包进aar，如果不需要可以去掉
 //            artifact androidJavadocsJar//将注释打包进aar，如果不需要可以去掉
-            artifact("$buildDir/outputs/aar/$aar_name")
-            //artifact("$buildDir/outputs/aar/${project.getName()}-release.aar")
+//            artifact("$buildDir/outputs/aar/$aar_name")
+            artifact("$buildDir/outputs/aar/${project.getName()}-release.aar")
         }
     }
     repositories {
@@ -85,7 +85,7 @@ publishing {
         }
     }
 }
-*/
+//*/
 
 /*
 afterEvaluate {
@@ -126,7 +126,7 @@ afterEvaluate {
 //            from components.findByName(variant.name)
             artifact("$buildDir/outputs/aar/${project.name}-release.aar")
             groupId = 'com.github.cdck'//自定义
-            artifactId = 'mupdf-example'//自定义
+            artifactId = 'mupdf-library'//自定义
             version = '13.0.0'//自定义
         }
     }

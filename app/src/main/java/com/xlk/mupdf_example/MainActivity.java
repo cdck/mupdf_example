@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         Bundle bundle = new Bundle();
         bundle.putString(MuPdfDocumentActivity.bundle_key_file_path, this.getExternalCacheDir().getAbsolutePath() + File.separator + "abcde.pdf");
         bundle.putBoolean(MuPdfDocumentActivity.bundle_key_delete_file, false);
-        bundle.putBoolean(MuPdfDocumentActivity.bundle_key_only_preview, true);
+        bundle.putBoolean(MuPdfDocumentActivity.bundle_key_only_preview, false);
         MuPdfDocumentActivity.jump(this, bundle);
     }
 }

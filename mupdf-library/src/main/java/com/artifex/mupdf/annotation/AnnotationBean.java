@@ -16,6 +16,7 @@ public class AnnotationBean {
     Point[] points;
     float paintSize;
     int paintColor;
+    boolean isDeleted = false;
 
     public AnnotationBean(int key, int type, Point[] points, float paintSize, int paintColor) {
         this.key = key;
@@ -23,6 +24,14 @@ public class AnnotationBean {
         this.points = points;
         this.paintSize = paintSize;
         this.paintColor = paintColor;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 
     public int getKey() {

@@ -10,7 +10,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PathMeasure;
 import android.graphics.PointF;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -74,10 +73,7 @@ public class AnnotationArtBoard extends View {
     private DrawPath drawPath;
     private final int WRAP_WIDTH = 300;
     private final int WRAP_HEIGHT = 300;
-
-    private DrawTextListener mListener;
     private DrawExitListener mDrawExitListener;
-    private boolean drawAgain;
     /**
      * 是否拖动画板
      */
@@ -109,16 +105,6 @@ public class AnnotationArtBoard extends View {
         this.core = core;
         this.docView = docView;
         this.mDrawExitListener = drawExitListener;
-        isCreate = true;
-        screenWidth = width;
-        screenHeight = height;
-        artBoardWidth = width;
-        artBoardHeight = height;
-        initial();
-    }
-
-    public AnnotationArtBoard(Context context, int width, int height) {
-        this(context);
         isCreate = true;
         screenWidth = width;
         screenHeight = height;
@@ -397,7 +383,7 @@ public class AnnotationArtBoard extends View {
                     annotationBeans.add(annotationBean);
                 }
                 if (currentDrawGraphics != DRAW_TEXT && currentDrawGraphics != DRAW_ERASER) {
-                    drawPath = new DrawPath(true);
+                    drawPath = new DrawPath();
                     drawPath.operid = operid;
                     drawPath.path = new Path(mPath);
                     drawPath.paint = new Paint(mPaint);
@@ -425,48 +411,25 @@ public class AnnotationArtBoard extends View {
         return array;
     }
 
-    /**
-     * 共享中橡皮檫
-     */
-    private void eraserPath(float x, float y) {
-        for (int i = 0; i < pathList.size(); i++) {
-            DrawPath drawPath = pathList.get(i);
-            if (!drawPath.isLocal) continue;//跳过不是本机的操作
-            PathMeasure pm = new PathMeasure(drawPath.path, false);
-            float length = pm.getLength();
-            Path tempPath = new Path();
-            pm.getSegment(0, length, tempPath, false);
-            float[] fa = new float[2];
-            float sc = 0;
-            while (sc < 1) {
-                sc += 0.001;
-                pm.getPosTan(sc * length, fa, null);
-                if (Math.abs((int) fa[0] - (int) x) <= 20 && Math.abs((int) fa[1] - (int) y) <= 20) {
-                    sc = 1;//找到了退出while循环
-                    initCanvas();
-                    pathList.remove(drawPath);//删除指定drawpath
-                    //也要进行删除待绘制集合中的数据
-                    deleteAnnotationBean(drawPath.operid);
-                    drawAgain(pathList);
-                    i--;
-                }
-            }
-        }
-    }
-
     private void deleteAnnotationBean(int key) {
-        Iterator<AnnotationBean> iterator = annotationBeans.iterator();
-        while (iterator.hasNext()) {
-            AnnotationBean next = iterator.next();
+        for (AnnotationBean next : annotationBeans) {
             if (next.key == key) {
-                iterator.remove();
+                next.setDeleted(true);
+                return;
             }
         }
     }
 
-    public void addDrawPath(AnnotationArtBoard.DrawPath drawPath){
-        pathList.add(drawPath);
+    private void reAddAnnotationBean(int key) {
+        for (AnnotationBean next : annotationBeans) {
+            if (next.key == key) {
+                next.setDeleted(false);
+                return;
+            }
+        }
     }
+
+
     /**
      * 正常橡皮搽功能
      */
@@ -531,140 +494,6 @@ public class AnnotationArtBoard extends View {
         }
     }
 
-    /**
-     * 绘制波浪线
-     *
-     * @param x 当前移动的x坐标
-     * @param y 当前移动的y坐标
-     */
-    private void drawWavyLine(float x, float y) {
-
-    }
-
-    public void localDrawText(float x, float y, String content) {
-        mPaint.setTextSize(paintWidth);
-        mPaint.setStyle(Paint.Style.FILL);
-        mPaint.setTextAlign(Paint.Align.LEFT);
-        drawText(x, y, content, mPaint, true);
-    }
-
-    /**
-     * 绘制文本内容
-     *
-     * @param x       左上角x
-     * @param y       左上角y
-     * @param content 文本内容
-     * @param paint   画笔
-     * @param isLocal 是否本机主动绘制
-     */
-    public void drawText(float x, float y, String content, Paint paint, boolean isLocal) {
-        Rect rect = new Rect();
-        paint.getTextBounds(content, 0, content.length(), rect);
-        int allTextWidth = rect.width();//输入的所有文本的宽度
-        int textHeight = rect.height();//文本的高度（用于换行显示）
-        int newWidth = (int) (x + allTextWidth);
-        int newHeight = (int) (y + textHeight);
-        if (artBoardWidth < newWidth) {
-            //进行扩充画板的宽度
-            Log.i(TAG, "AnnotationArtBoard.drawText: 扩充画板的宽度 newWidth=" + newWidth + ",allTextWidth=" + allTextWidth);
-            setCanvasSize(newWidth, artBoardHeight);
-        }
-        if (artBoardHeight < newHeight) {
-            //进行扩充画板的高度
-            Log.i(TAG, "AnnotationArtBoard.drawText: 扩充画板的高度 newHeight=" + newHeight + ",textHeight=" + textHeight);
-            setCanvasSize(artBoardWidth, newHeight);
-        }
-        Paint.FontMetrics fontMetrics = paint.getFontMetrics();
-        float leading = fontMetrics.leading;
-        float top = fontMetrics.top;//负数
-        float ascent = fontMetrics.ascent;//负数
-        float descent = fontMetrics.descent;
-        float bottom = fontMetrics.bottom;
-        float baseLine = top / 2 - bottom / 2;//负数
-        //mCanvas.drawText(content, x, y + (bottom - top) / 2, mPaint);
-        mCanvas.drawText(content, x, y - baseLine, paint);
-        Log.i(TAG, "AnnotationArtBoard.drawText: rect:" + rect.toString()
-                + "\ntop:" + top + ",ascent:" + ascent + ",descent:" + descent + ",bottom:" + bottom + ",baseLine:" + baseLine);
-        if (isLocal) {
-            long utcstamp = System.currentTimeMillis();
-            int operid = (int) (utcstamp / 10);
-            //将绘制的信息保存到绘制列表
-            DrawPath drawPath = new DrawPath(true);
-            drawPath.paint = new Paint(paint);
-            drawPath.operid = operid;
-            drawPath.text = content;
-            drawPath.pointF = new PointF(x, y);
-            pathList.add(drawPath);
-        }
-    }
-
-    public void drawText(final float x, final float y, String drawText) {
-        float ex = x;
-        float ey = y;
-        float size;
-//        控制文本的大小（不能太小）
-        if (paintWidth < 30) {
-            size = 30;
-        } else {
-            size = paintWidth;
-        }
-//        控制文本完全显示出来（小于某个值顶部会隐藏）
-        if (y < 50) {
-            if (size == 30) {
-                ey = 30;
-            } else if (size < 60) {
-                ey = 50;
-            } else if (size > 60) {
-                ey = 80;
-            }
-        }
-        float finalSize = size;
-        float fx = ex;
-        float fy = ey;
-        mPaint.setTextSize(finalSize);
-        mPaint.setStyle(Paint.Style.FILL);
-        Rect rect = new Rect();
-        mPaint.getTextBounds(drawText, 0, drawText.length(), rect);
-        int width = rect.width();//输入的所有文本的宽度
-        int height = rect.height();//文本的高度（用于换行显示）
-//        float remainWidth = screenWidth - fx;//可容许显示文本的宽度
-//        float remainWidth = currentArtBoardWidth - fx;//可容许显示文本的宽度
-        float remainWidth = artBoardWidth - fx;//可容许显示文本的宽度
-        int ilka = width / drawText.length();//每个文本的宽度
-        int canSee = (int) (remainWidth / ilka);//可以显示的文本个数
-        if (canSee > 2) {
-            if (remainWidth < width) {// 小于所有文本的宽度(不够显示才往下叠)
-                funDraw(mPaint, height, canSee - 1, fx, fy, drawText);
-            } else {
-                mCanvas.drawText(drawText, fx, fy, mPaint);
-            }
-            invalidate();
-            long utcstamp = System.currentTimeMillis();
-            int operid = (int) (utcstamp / 10);
-            //将绘制的信息保存到本机绘制列表中
-            DrawPath drawPath = new DrawPath(true);
-            drawPath.paint = new Paint(mPaint);
-            drawPath.operid = operid;
-            drawPath.text = drawText;
-            drawPath.pointF = new PointF(fx, fy);
-            drawPath.height = height;
-            drawPath.lw = (int) remainWidth;
-            drawPath.allTextWidth = width;
-            drawPath.cansee = canSee;
-            pathList.add(drawPath);
-        }
-    }
-
-    public void drawZoomBmp(Bitmap bitmap) {
-        if (!drawAgain) {
-            int width = bitmap.getWidth();
-            int height = bitmap.getHeight();
-            setCanvasSize(width, height);
-        }
-        drawAgain = false;
-        mCanvas.drawBitmap(bitmap, 0, 0, new Paint());
-        invalidate();
-    }
 
     /**
      * 设置画板大小
@@ -695,23 +524,61 @@ public class AnnotationArtBoard extends View {
     }
 
     /**
+     * 共享中橡皮檫
+     */
+    private void eraserPath(float x, float y) {
+        boolean isChanged = false;
+        for (int i = 0; i < pathList.size(); i++) {
+            DrawPath drawPath = pathList.get(i);
+            if (drawPath.isDelete) continue;//已经设置成删除状态的进行过滤掉
+            PathMeasure pm = new PathMeasure(drawPath.path, false);
+            float length = pm.getLength();
+            Path tempPath = new Path();
+            pm.getSegment(0, length, tempPath, false);
+            float[] fa = new float[2];
+            float sc = 0;
+            while (sc < 1) {
+                sc += 0.001;
+                pm.getPosTan(sc * length, fa, null);
+                if (Math.abs((int) fa[0] - (int) x) <= 20 && Math.abs((int) fa[1] - (int) y) <= 20) {
+                    sc = 1;//找到了退出while循环
+                    isChanged = true;
+                    initCanvas();
+                    drawPath.setDeleted(true, i);
+                    pathList.remove(drawPath);//删除指定drawpath
+                    //也要进行删除待绘制集合中的数据
+                    deleteAnnotationBean(drawPath.operid);
+                    pathList.add(drawPath);
+                }
+            }
+        }
+        if (isChanged) {
+            drawAgain(pathList);
+        }
+    }
+
+    /**
      * 撤销,删除本机最后的一次操作
      */
     public void revoke() {
         if (!pathList.isEmpty()) {
             initCanvas();
-            for (int i = pathList.size() - 1; i >= 0; i--) {
-                DrawPath item = pathList.get(i);
-                if (item.isLocal) {
-                    pathList.remove(i);
-                    break;
+            int index = pathList.size() - 1;
+            DrawPath drawPath = pathList.get(index);
+            if (drawPath.isDelete) {
+                int deleteIndex = drawPath.deleteIndex;
+                drawPath.setDeleted(false, -1);
+                pathList.remove(index);
+                pathList.add(deleteIndex, drawPath);
+                reAddAnnotationBean(drawPath.operid);
+            } else {
+                pathList.remove(index);
+                if (!annotationBeans.isEmpty()) {
+                    annotationBeans.remove(annotationBeans.size() - 1);
                 }
             }
             //将其他人的绘制信息也重新绘制
             drawAgain(pathList);
-        }
-        if (!annotationBeans.isEmpty()) {
-            annotationBeans.remove(annotationBeans.size() - 1);
         }
     }
 
@@ -722,6 +589,7 @@ public class AnnotationArtBoard extends View {
      */
     public void drawAgain(List<DrawPath> pathList) {
         for (DrawPath next : pathList) {
+            if (next.isDelete) continue;
             if (next.paint != null) {
                 if (next.path != null) {
                     mCanvas.drawPath(next.path, next.paint);
@@ -753,20 +621,14 @@ public class AnnotationArtBoard extends View {
         }
     }
 
-    public void drawPath(Path path, Paint paint) {
-        mCanvas.drawPath(path, paint);
-    }
-
-    public void drawText(String ptext, float lx, float ly, Paint paint) {
-        mCanvas.drawText(ptext, lx, ly, paint);
-    }
 
     public void setCancelAnnotation() {
         isCancelAnnotation = true;
     }
 
     public static class DrawPath {
-        public boolean isLocal;//=true 表示是本机的操作
+        public boolean isDelete;//=true 表示橡皮擦操作
+        public int deleteIndex;//进行删除操作的操作列表中的索引位
         public Paint paint; //画笔
         public Path path = null; //路径
         public int operid;//操作ID
@@ -777,30 +639,28 @@ public class AnnotationArtBoard extends View {
         public int cansee;//可以显示的文本的个数
         public int lw;//可容许显示文本的区域宽度
         public int allTextWidth;//所有文本的宽度
-        public boolean isScreenshot;//截图
-//        public ByteString picdata;//截图数据
 
-        public DrawPath(boolean isLocal) {
-            this.isLocal = isLocal;
+        public void setDeleted(boolean value, int index) {
+            isDelete = value;
+            deleteIndex = index;
         }
 
         @Override
         public String toString() {
             return "DrawPath{" +
-                    "isLocal=" + isLocal +
+                    "isDelete=" + isDelete +
+                    ", deleteIndex=" + deleteIndex +
+                    ", paint=" + paint +
+                    ", path=" + path +
                     ", operid=" + operid +
-                    ", paint=" + (paint != null) +
-                    ", path=" + (path != null) +
+                    ", text='" + text + '\'' +
+                    ", pointF=" + pointF +
+                    ", height=" + height +
+                    ", cansee=" + cansee +
+                    ", lw=" + lw +
+                    ", allTextWidth=" + allTextWidth +
                     '}';
         }
-    }
-
-    public void setDrawTextListener(DrawTextListener listener) {
-        mListener = listener;
-    }
-
-    public interface DrawTextListener {
-        void showEdtPop(float x, float y, @Deprecated int screenX, @Deprecated int screenY);
     }
 
     public void setDrawExitListener(DrawExitListener listener) {
@@ -818,6 +678,14 @@ public class AnnotationArtBoard extends View {
     public void release() {
         Log.i(TAG, "AnnotationArtBoard.release: mDrawExitListener是否为null：" + (mDrawExitListener == null));
         if (mDrawExitListener != null && !isCancelAnnotation) {
+            //去掉删除状态的
+            Iterator<AnnotationBean> iterator = annotationBeans.iterator();
+            while (iterator.hasNext()) {
+                AnnotationBean next = iterator.next();
+                if (next.isDeleted()) {
+                    iterator.remove();
+                }
+            }
             mDrawExitListener.onDrawAnnotations(annotationBeans);
         }
         if (mBitmap != null) {
